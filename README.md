@@ -44,6 +44,8 @@ To see one pass, replace the TODO in `ShipmentMethodShippingCostTest` with the e
 `new Shipment(1.5d, 15, 1)`, so the cost is 1.5 × 2.5 × 99 / 100 = 3.7125:
 
 ```java
+import static org.assertj.core.api.Assertions.within;
+
 assertThat(result).isEqualTo(3.7125, within(1e-9));
 ```
 
@@ -64,13 +66,14 @@ IDE will differ in the values but not in the structure.
 
 ## Compile with `-parameters`
 
-TestBuddy matches constructor rules to fields by parameter name. Java drops those names unless the compiler is
-told to keep them. This project sets `-parameters` in `pom.xml`. If you build the classes in IntelliJ, add it too:
+This project sets `-parameters` in `pom.xml`, so constructor and method parameter names survive compilation.
+TestBuddy and TestKit use those names to match a rule to its parameter. For this demo the generated tests are the
+same with or without the flag, but a class whose constructor parameter names differ from its field names needs it.
+
+If you build the classes in IntelliJ, you can add it there too:
 
 **Settings → Build, Execution, Deployment → Compiler → Java Compiler → Additional command line parameters:**
 `-parameters`
-
-Without it, the core module's generated tests fail with `missing @Min/@Max` warnings and a placeholder file.
 
 ## What to look for
 
