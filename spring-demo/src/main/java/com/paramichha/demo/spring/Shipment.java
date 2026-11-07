@@ -1,4 +1,4 @@
-package demo.spring;
+package com.paramichha.demo.spring;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

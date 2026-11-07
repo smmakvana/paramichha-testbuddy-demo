@@ -1,4 +1,4 @@
-package demo.core;
+package com.paramichha.demo.core;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
