@@ -1,12 +1,13 @@
-package demo.jakarta;
+package demo.spring;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 
 /**
- * A parcel shipment in a Jakarta project. The annotations are the rules; a validator reports
- * violations, so the constructor accepts any value and does not throw.
+ * A parcel shipment in a Spring project. The annotations are the rules. Spring validates objects
+ * that pass a {@code @Valid} boundary, such as a controller or a service with {@code @Validated};
+ * the constructor itself accepts any value and does not throw.
  */
 public class Shipment {
 

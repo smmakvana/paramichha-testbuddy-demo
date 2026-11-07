@@ -12,7 +12,7 @@
     <!-- Two modules, one class each, to compare TestBuddy's output with and without a validation provider. -->
     <modules>
         <module>core-demo</module>
-        <module>jakarta-demo</module>
+        <module>spring-demo</module>
     </modules>
 
     <properties>
