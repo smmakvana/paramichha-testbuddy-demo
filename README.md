@@ -1,15 +1,8 @@
 # TestBuddy demo
 
-A small Maven project that shows what [TestBuddy](https://github.com/smmakvana/paramichha-testbuddy) generates
-for the same class in two setups:
+[![Java 21+](https://img.shields.io/badge/Java-21%2B-blue)](https://openjdk.org/)
 
-| Module | Validation provider | How the rules are enforced | Generated rejects tests expect |
-|---|---|---|---|
-| `core-demo` | None (core library) | The constructor throws `IllegalArgumentException` | `assertThatThrownBy(...)` on the constructor |
-| `jakarta-demo` | Hibernate Validator | A validator reports violations; the constructor accepts any value | `validator.validate(...)` reports a violation on the field |
-
-Both modules contain the same `Circle`: a centre (`x`, `y`) and a `radius`, with the methods `area()`,
-`perimeter()`, `diameter()` and `contains(x, y)`.
+A small two-module Maven project that shows TestBuddy's output with and without a validation provider. Use it to see the difference, and to check your IDE setup.
 
 ## Requirements
 
@@ -62,3 +55,7 @@ Without it, the core module's generated tests fail with `missing @Min/@Max` warn
 - **Jakarta module:** the constructor accepts any value. The rejects tests ask the validator for a violation on the
   field. A class that does not carry the annotation fails the test.
 - **Both:** the field tests, the constructor-creation tests and the getter tests pass as soon as the class is correct.
+
+## Contributing
+
+Open an issue or a pull request for new examples or clearer instructions.
