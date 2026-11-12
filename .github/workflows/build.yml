@@ -1,0 +1,70 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      # Each module has two generated tests that fail on purpose until someone writes the expected
+      # value (see the README), so a failing test does not stop the build here. The next step
+      # decides which failures are allowed. Compile errors still stop it.
+      - name: Build and test
+        run: mvn -B verify -Dmaven.test.failure.ignore=true
+
+      - name: Only the TODO tests may fail
+        run: |
+          python3 - <<'PY'
+          import glob, os, sys, xml.etree.ElementTree as ET
+
+          EXPECTED = "TODO: define the expected result of"
+          tests = todo = 0
+          unexpected = []
+          for path in sorted(glob.glob("*/target/surefire-reports/TEST-*.xml")):
+              for case in ET.parse(path).getroot().iter("testcase"):
+                  tests += 1
+                  for kind in ("failure", "error"):
+                      problem = case.find(kind)
+                      if problem is None:
+                          continue
+                      message = " ".join((problem.get("message") or "").split())
+                      if EXPECTED in message:
+                          todo += 1
+                      else:
+                          unexpected.append(f"{case.get('classname')}.{case.get('name')}: {message[:200]}")
+
+          lines = ["## Demo build",
+                   f"{tests} tests run: {tests - todo - len(unexpected)} passed, {todo} TODO tests failed as expected,"
+                   f" {len(unexpected)} failed unexpectedly."]
+          if tests == 0:
+              lines += ["", "No tests ran."]
+          lines += ["", *[f"- {line}" for line in unexpected]] if unexpected else []
+          text = "\n".join(lines)
+          print(text)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write(text + "\n")
+          # No pipe above: this step's exit code must be Python's. GitHub's default shell has no pipefail.
+          sys.exit(1 if tests == 0 or unexpected else 0)
+          PY
+
+      - name: Attach the test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          if-no-files-found: ignore
+          path: "*/target/surefire-reports/"
